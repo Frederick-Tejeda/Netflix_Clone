@@ -1,0 +1,104 @@
+---
+export const prerender = true
+
+const request = await fetch('https://api.themoviedb.org/3/trending/all/week?language=en-US', 
+    {
+        method: 'GET',
+		headers:  {
+		accept: 'application/json',
+	    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlOGZlNTAwYjBjNDdhNTg0ZGExZmNiMzA0ZDEyOTY0MiIsInN1YiI6IjY1ZDVmMmNhYjA0NjA1MDE3YjA5MGY4NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._aOhARrES9hn7shpUyAXJDeqdw07zz-83liR3zfg3FQ'
+	}})
+const res = await request.json()
+const movie = res.results[Math.floor(Math.random() * res.results.length - 1)]
+function truncate(str, n) {
+return str?.length > n ? str.substr(0, n - 1) + "..." : str;
+}
+const truncated = truncate(movie?.overview, 150)
+---
+
+<header class="banner"
+    style={{
+    backgroundSize: "cover",
+    backgroundImage: `url(
+    "https://image.tmdb.org/t/p/original/${movie?.backdrop_path}"
+    )`,
+    backgroundPosition: "center center"
+    }}
+>
+    <div class="banner_contents">
+    <h1 class="banner_title">
+        {movie?.title || movie?.name || movie?.original_name}
+    </h1>
+
+    <div class="banner_buttons">
+        <button class="banner_button">Play</button>
+        <button class="banner_button">My List</button>
+    </div>
+    <h1 class="banner_description">{truncated}</h1>
+    </div>
+
+    <div class="banner--fadeBottom" />
+</header>
+
+<style>
+.banner {
+    color: white;
+    object-fit: contain;
+    height: 448px;
+  }
+  
+  .banner_contents {
+    margin-left: 30px;
+    padding-top: 140px;
+    height: 190px;
+  }
+
+  .banner_contents *{
+    border-radius: 5px;
+  }
+  
+  .banner_title {
+    font-size: 3rem;
+    font-weight: 800;
+    padding: 0.3rem 1rem 0.3rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: inline-block;
+  }
+  
+  .banner_description {
+    width: auto;
+    line-height: 1.3;
+    font-size: 1rem;
+    max-width: 360px;
+    height: auto;
+    max-height: 80px;
+    padding: 5px 0px 5px 10px;
+    background-color: rgba(0, 0, 0, 0.5)
+  }
+  
+  .banner_button {
+    cursor: pointer;
+    color: white;
+    outline: none;
+    border: none;
+    font-weight: 700;
+    border-radius: 0.2vw;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    margin-right: 1rem;
+    background-color: rgba(0, 0, 0, 0.8);
+    font-size: 0.9rem;
+  }
+  
+  .banner_button:hover {
+    color: #000;
+    background-color: #e6e6e6;
+    transition: all 0.2s;
+  }
+  
+  .banner--fadeBottom {
+    height: 7.4rem;
+    background-image: linear-gradient(180deg, transparent, rgba(37, 37, 37, 0.61), #111);
+  }</style>

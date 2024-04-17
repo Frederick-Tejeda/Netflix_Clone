@@ -1,0 +1,83 @@
+---
+export const prerender = true
+
+import Dialog from "./Dialog.astro"
+const base_url = "https://image.tmdb.org/t/p/original"
+const { title, fetchUrl, isLargeRow } = Astro.props
+//console.log('https://api.themoviedb.org/3' + fetchUrl + '&sort_by=vote_count.desc')
+const response = await fetch('https://api.themoviedb.org/3' + fetchUrl + '&sort_by=vote_count.desc', 
+    {
+        method: 'GET',
+		headers:  {
+		accept: 'application/json',
+	    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlOGZlNTAwYjBjNDdhNTg0ZGExZmNiMzA0ZDEyOTY0MiIsInN1YiI6IjY1ZDVmMmNhYjA0NjA1MDE3YjA5MGY4NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._aOhARrES9hn7shpUyAXJDeqdw07zz-83liR3zfg3FQ'
+	}})
+const res = await response.json()
+const movies = res.results
+---
+
+<div class="row">
+<h2>{title}</h2>
+<div class="row_posters">
+    {movies && movies.map((movie, id) => {
+    return movie.backdrop_path && (<img
+        id={movie.id}
+        loading="lazy"
+        onclick=`() => console.log(${JSON.stringify(movie)})`
+        class={`row_poster ${isLargeRow && "row_posterLarge"}`}
+        src={`${base_url}${movie.backdrop_path}`}
+        alt={movie.title ?? movie.name} />
+    )
+    })}
+</div>
+</div>
+
+<script>
+    const imgs = document.getElementsByTagName('img')
+    const newImgs = Array.prototype.slice.call(imgs)
+    for(let i in newImgs){
+        if(+i < 2){
+            continue
+        }else{
+            console.log('alt', newImgs[i].alt)
+        }
+    }
+</script>
+
+<style>
+.row {
+  color: #fff;
+  margin-left: 20px;
+}
+
+.row_posters {
+  display: flex;
+  overflow-x: scroll;
+  padding: 20px;
+}
+
+.row_posters::-webkit-scrollbar {
+  display: none;
+}
+
+.row_poster {
+  width: 200px;
+  aspect-ratio: 16/9;
+  object-fit: contain;
+  margin-right: 20px;
+  transition: transform 450ms;
+  border-radius: 10px;
+}
+
+.row_poster:hover {
+  transform: scale(1.1);
+}
+
+.row_posterLarge {
+  max-height: 250px;
+}
+
+.row_posterLarge:hover {
+  transform: scale(1.11);
+}
+</style>
