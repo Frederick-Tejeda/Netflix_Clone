@@ -7,7 +7,7 @@
     "db-push": "astro db push",
     "dev-db": "astro dev --remote",
     "start": "astro dev",
-    "build": "astro build --remote",
+    "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
