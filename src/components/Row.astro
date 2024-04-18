@@ -1,6 +1,4 @@
 ---
-export const prerender = true
-
 import Dialog from "./Dialog.astro"
 const base_url = "https://image.tmdb.org/t/p/original"
 const { title, fetchUrl, isLargeRow } = Astro.props
@@ -17,37 +15,60 @@ const movies = res.results
 ---
 
 <div class="row">
-<h2>{title}</h2>
-<div class="row_posters">
-    {movies && movies.map((movie, id) => {
-    return movie.backdrop_path && (<img
-        id={movie.id}
-        loading="lazy"
-        onclick=`() => console.log(${JSON.stringify(movie)})`
-        class={`row_poster ${isLargeRow && "row_posterLarge"}`}
-        src={`${base_url}${movie.backdrop_path}`}
-        alt={movie.title ?? movie.name} />
-    )
-    })}
-</div>
+  <h2>{title}</h2>
+  <div class="row_posters">
+      {movies && movies.map((movie, id) => {
+      return movie.backdrop_path && (<img
+          id={id}
+          loading="lazy"
+          onclick=`ShowModal(${JSON.stringify(movie)})`
+          class={`row_poster ${isLargeRow && "row_posterLarge"}`}
+          src={`${base_url}${movie.backdrop_path}`}
+          alt={movie.title ?? movie.name} />
+      )
+      })}
+  </div>
+  </div>
 </div>
 
-<script>
-    const imgs = document.getElementsByTagName('img')
-    const newImgs = Array.prototype.slice.call(imgs)
-    for(let i in newImgs){
-        if(+i < 2){
-            continue
-        }else{
-            console.log('alt', newImgs[i].alt)
-        }
+<script is:inline>
+    document.getElementById('background-dialog').addEventListener('click', () => {
+      const dialog = document.getElementById('dialog')
+      if(dialog.classList.contains('show')){
+        HideModal(dialog)
+      }
+    })
+    function ShowModal(c){
+      const body = document.body, html = document.documentElement;
+      const pageHeight = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, 
+      html.offsetHeight);
+      document.getElementById('background-dialog').style.width = `${window.screen.availWidth}px`;
+      document.getElementById('background-dialog').style.height = `${pageHeight}px`;
+      document.getElementById('background-dialog').style.position = 'fixed';
+      document.getElementById('dialog').classList.toggle('show')
+      document.getElementById('dialog').style.visibility = "visible"
+      document.getElementById('dialog').style.backgroundImage = `url(${"https://image.tmdb.org/t/p/original"+c['backdrop_path']})`
+      //
+      console.log('c', c)
+      document.getElementById('dialog-h1').innerText = c['name'] ?? c['title'] ?? c['original_title']
+      document.getElementById('dialog-span-votes').innerText = `Rating: ${Math.round(c['vote_average'] * 10)}% `
+      document.getElementById('dialog-span-release').innerText = ` Released date: ${c['first_air_date'] ?? c['release_date']}`
+      document.getElementById('dialog-p').innerText = c['overview']
+      document.getElementById('dialog-container-buttons').innerHTML = '<button id="dialog-button-play"><img src="./play_icon.png" alt="play_icon" />Play</button><button id="dialog-button-add"><img src="./add_icon.png" alt="add_icon" /> My List</button>'
+    }
+    function HideModal(d){
+      document.getElementById('background-dialog').style.width = 0;
+      document.getElementById('background-dialog').style.height = 0;
+      document.getElementById('background-dialog').style.position = 'none';
+      d.classList.toggle('show')
+      d.style.visibility = "hidden"
     }
 </script>
 
 <style>
 .row {
   color: #fff;
-  margin-left: 20px;
+  margin: 0 20px;
 }
 
 .row_posters {

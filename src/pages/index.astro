@@ -1,5 +1,21 @@
 ---
-export const prerender = true
+import { db, Users } from "astro:db";
+
+const users = await db.select().from(Users)
+
+//console.log('users', users)
+
+let currentUserCookie, currentUser
+
+if (Astro.cookies.has("currentUser")) {
+	currentUserCookie = Astro.cookies.get("currentUser")
+	currentUser = users.find((u) => u['id'].toString() === currentUserCookie.value)
+}else{
+	currentUser = 'N/A'
+}
+
+console.log('currentUser', currentUser)
+
 
 import Layout from '../layouts/Layout.astro';
 import Row from '../components/Row.astro';
@@ -23,19 +39,112 @@ const requests = {
 <Layout title="Home">
 	<Nav />
 	<Banner />
-	<Row title="Platform Originals" isLargeRow fetchUrl={requests.fetchNetflixOriginals} />
-	<Row title="Trending" fetchUrl={requests.fetchTrending} />
-	<Row title="Top Rated" fetchUrl={requests.fetchTopRated} />
-	<Row title="Family Movies" fetchUrl={requests.fetchFamilyMovies} />
-	<Row title="Action and Adventure" fetchUrl={requests.fetchActionMovies} />
-	<Row title="Comedy Movies" fetchUrl={requests.fetchComedyMovies} />
-	<Row title="Documentaries" fetchUrl={requests.fetchDocumentaries} />
-	<Row title="Mistery Movies" fetchUrl={requests.fetchMisteryMovies} />
-	<Row title="Sci-Fi and Fantasy" fetchUrl={requests.fetchSci_FyAndFantasyMovies} />
-	<Row title="Western Movies" fetchUrl={requests.fetchWesternMovies} />
+	<div id="background-dialog"></div>
+	<div id="dialog" class="dialog">
+		<div class="dialog-container">
+			<h1 id="dialog-h1"></h1>
+			<h3><span id="dialog-span-votes"></span><span id="dialog-span-release"></span></h3>
+			<p id="dialog-p"></p>
+			<div><button id="dialog-button-play"><img src="./play_icon.png" alt="play_icon" />Play</button><button id="dialog-button-add"><img src="./add_icon.png" alt="add_icon" /> My List</button></div>
+		</div>
+	</div>
+	<div class="row-container"></div>
+		<Row title="Platform Originals" isLargeRow fetchUrl={requests.fetchNetflixOriginals} />
+		<Row title="Trending" fetchUrl={requests.fetchTrending} />
+		<Row title="Top Rated" fetchUrl={requests.fetchTopRated} />
+		<Row title="Family Movies" fetchUrl={requests.fetchFamilyMovies} />
+		<Row title="Action and Adventure" fetchUrl={requests.fetchActionMovies} />
+		<Row title="Comedy Movies" fetchUrl={requests.fetchComedyMovies} />
+		<Row title="Documentaries" fetchUrl={requests.fetchDocumentaries} />
+		<Row title="Mistery Movies" fetchUrl={requests.fetchMisteryMovies} />
+		<Row title="Sci-Fi and Fantasy" fetchUrl={requests.fetchSci_FyAndFantasyMovies} />
+		<Row title="Western Movies" fetchUrl={requests.fetchWesternMovies} />
+	</div>
 </Layout>
 
 <style>
+#background-dialog{
+  background-color: rgba(0, 0, 0, 0.8);
+  position: none;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+.dialog{
+  position: fixed;
+  top: 0%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  width: calc(80dvw - 40px);
+  aspect-ratio: 16/9;
+  visibility: hidden;
+  transition: 0.3s 0.3s ease-out;
+  color: white;
+  background-size: cover;
+  border-radius: 20px;
+  box-shadow: 0 1.5rem 4rem rgba(23, 24, 24, 0.15);
+}
+.dialog-container{
+	background: linear-gradient(90deg, #000 50%, transparent);
+	width: calc(80dvw - 40px);
+	aspect-ratio: 16/9;
+	padding: 10px 20px 0px 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center
+}
+.dialog-container * {
+	width: 70%
+}
+.dialog h1{
+	text-align: left;
+}
+.dialog p{
+	font-size: 1.2rem;
+	line-height: 1.6rem;
+}
+.dialog #dialog-span-votes{
+	color: #2b961f
+}
+.dialog button{
+	width: auto;
+	height: auto;
+	padding: 5px 20px 5px 40px;
+	margin-right: 10px;
+	font-size: 1rem;
+	border: 0;
+	color: white;
+	border-radius: 3px;
+	transition: all 0.2s;
+	cursor: pointer;
+	position: relative;
+}
+.dialog button img{
+	width: 16px;
+	height: auto;
+	position: absolute;
+	top: 50%;
+	left: 15px;
+	transform: translateY(-50%);
+}
+.dialog button:hover{
+	transform: scale(1.1)
+}
+.dialog #dialog-button-play{
+	background-color: red
+}
+.dialog #dialog-button-add{
+	background-color: black;
+	border: 0.5px solid #7a7a7a;
+}
+.show{
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 1;
+}
+
 	main {
 		margin: auto;
 		padding: 1rem;
@@ -91,5 +200,8 @@ const requests = {
 		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
 		gap: 2rem;
 		padding: 0;
+	}
+	.row-container{
+		margin-top: 500px
 	}
 </style>
