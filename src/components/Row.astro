@@ -42,19 +42,18 @@ const movies = res.results
       const body = document.body, html = document.documentElement;
       const pageHeight = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, 
       html.offsetHeight);
+      console.log('c', c)
+      document.getElementById('dialog-h1').innerText = c['name'] ?? c['title'] ?? c['original_title']
+      document.getElementById('dialog-span-votes').innerText = `Rating: ${Math.round(c['vote_average'] * 10)}% `
+      document.getElementById('dialog-span-release').innerText = ` Released date: ${c['first_air_date'] ?? c['release_date']}`
+      document.getElementById('dialog-p').innerText = c['overview']
+      ///
       document.getElementById('background-dialog').style.width = `${window.screen.availWidth}px`;
       document.getElementById('background-dialog').style.height = `${pageHeight}px`;
       document.getElementById('background-dialog').style.position = 'fixed';
       document.getElementById('dialog').classList.toggle('show')
       document.getElementById('dialog').style.visibility = "visible"
       document.getElementById('dialog').style.backgroundImage = `url(${"https://image.tmdb.org/t/p/original"+c['backdrop_path']})`
-      //
-      console.log('c', c)
-      document.getElementById('dialog-h1').innerText = c['name'] ?? c['title'] ?? c['original_title']
-      document.getElementById('dialog-span-votes').innerText = `Rating: ${Math.round(c['vote_average'] * 10)}% `
-      document.getElementById('dialog-span-release').innerText = ` Released date: ${c['first_air_date'] ?? c['release_date']}`
-      document.getElementById('dialog-p').innerText = c['overview']
-      document.getElementById('dialog-container-buttons').innerHTML = '<button id="dialog-button-play"><img src="./play_icon.png" alt="play_icon" />Play</button><button id="dialog-button-add"><img src="./add_icon.png" alt="add_icon" /> My List</button>'
     }
     function HideModal(d){
       document.getElementById('background-dialog').style.width = 0;
