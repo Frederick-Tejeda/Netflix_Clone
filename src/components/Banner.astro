@@ -1,7 +1,7 @@
 ---
 const request = await fetch('https://api.themoviedb.org/3/trending/all/week?language=en-US', 
     {
-        method: 'GET',
+    method: 'GET',
 		headers:  {
 		accept: 'application/json',
 	    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlOGZlNTAwYjBjNDdhNTg0ZGExZmNiMzA0ZDEyOTY0MiIsInN1YiI6IjY1ZDVmMmNhYjA0NjA1MDE3YjA5MGY4NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._aOhARrES9hn7shpUyAXJDeqdw07zz-83liR3zfg3FQ'
@@ -13,7 +13,6 @@ return str?.length > n ? str.substr(0, n - 1) + "..." : str;
 }
 const truncated = truncate(movie?.overview, 150)
 ---
-
 <header class="banner"
     style={{
     backgroundSize: "cover",
@@ -29,13 +28,11 @@ const truncated = truncate(movie?.overview, 150)
     </h1>
 
     <div class="banner_buttons">
-        <button class="banner_button">Play</button>
-        <button class="banner_button">My List</button>
+        <button class="banner_button play_button"><img src="./play_icon.png" alt="play_icon" /><span>Play</span></button>
+        <button class="banner_button"><img src="./add_icon.png" alt="add_icon" /><span>My List</span></button>
     </div>
     <h1 class="banner_description">{truncated}</h1>
     </div>
-
-    <div class="banner--fadeBottom" />
 </header>
 
 <style>
@@ -43,7 +40,7 @@ const truncated = truncate(movie?.overview, 150)
     color: white;
     object-fit: contain;
     width: 100dvw;
-    height: 448px;
+    height: 65dvh;
     position: absolute;
     top: 0; 
     left: 0;
@@ -51,32 +48,41 @@ const truncated = truncate(movie?.overview, 150)
   }
   
   .banner_contents {
-    margin-left: 30px;
-    padding-top: 140px;
+    margin-left: 1rem;
+    position: relative;
+    top: calc(50dvh - 200px);
     height: 190px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,.45);
   }
 
   .banner_contents *{
     border-radius: 5px;
+    margin: 5px 0;
   }
   
   .banner_title {
     font-size: 3rem;
-    font-weight: 800;
+    font-weight: 800px;
     padding: 0.3rem 1rem 0.3rem;
-    background-color: rgba(0, 0, 0, 0.3);
     display: inline-block;
   }
   
   .banner_description {
     width: auto;
     line-height: 1.3;
-    font-size: 1rem;
-    max-width: 360px;
+    font-size: 1.2rem;
+    max-width: 500px;
     height: auto;
     max-height: 80px;
-    padding: 5px 0px 5px 10px;
-    background-color: rgba(0, 0, 0, 0.5)
+    padding: 5px 1rem 5px;
+    text-align: justify;
+  }
+
+  .banner_buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding-left: 1rem;
   }
   
   .banner_button {
@@ -86,22 +92,82 @@ const truncated = truncate(movie?.overview, 150)
     border: none;
     font-weight: 700;
     border-radius: 0.2vw;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
+    padding: 0.5rem 2rem;
     margin-right: 1rem;
     background-color: rgba(0, 0, 0, 0.8);
-    font-size: 0.9rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 5px
   }
   
+  .banner_button img{
+    height: 0.8rem;
+    width: auto;
+  }
+
   .banner_button:hover {
-    color: #000;
-    background-color: #e6e6e6;
+    background-color: gray;
     transition: all 0.2s;
   }
+  .play_button:hover {
+    background-color: red
+  }
   
-  .banner--fadeBottom {
-    height: 7.4rem;
-    background-image: linear-gradient(180deg, transparent, rgba(37, 37, 37, 0.61), #111);
-  }</style>
+  .dialog button{
+	width: auto;
+	height: auto;
+	padding: 5px 20px 5px 40px;
+	margin-right: 10px;
+	font-size: 1rem;
+	border: 0;
+	color: white;
+	border-radius: 3px;
+	transition: all 0.2s;
+	cursor: pointer;
+	position: relative;
+}
+.dialog button img{
+	width: 16px;
+	height: auto;
+	position: absolute;
+	top: 50%;
+	left: 15px;
+	transform: translateY(-50%);
+}
+.dialog button:hover{
+	transform: scale(1.1)
+}
+.dialog #dialog-button-play{
+	background-color: red
+}
+.dialog #dialog-button-add{
+	background-color: black;
+	border: 0.5px solid #7a7a7a;
+} 
+@media only screen and (max-width: 600px) {
+  .banner_contents{
+    margin-left: 0rem;
+  }
+  .banner_title{
+    font-size: 2rem;
+  }
+  .banner_description{
+    max-width: 400px;
+    font-size: 1rems;
+  }
+  .banner_button{
+    font-size: .8rem;
+  }
+}
+@media only screen and (max-width: 450px) {
+  .banner_description{
+    max-width: 350px;
+  }
+}
+@media only screen and (max-width: 400px) {
+  .banner_description{
+    max-width: 300px;
+  }
+}
+  </style>

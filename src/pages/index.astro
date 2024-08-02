@@ -1,24 +1,4 @@
 ---
-/*
-import { db, Users } from "astro:db";
-
-const users = await db.select().from(Users)
-
-//console.log('users', users)
-
-let currentUserCookie, currentUser
-
-if (Astro.cookies.has("currentUser")) {
-	currentUserCookie = Astro.cookies.get("currentUser")
-	currentUser = users.find((u) => u['id'].toString() === currentUserCookie.value)
-}else{
-	currentUser = 'N/A'
-}
-
-console.log('currentUser', currentUser)
-
-*/
-
 import Layout from '../layouts/Layout.astro';
 import Row from '../components/Row.astro';
 import Nav from '../components/Nav.astro';
@@ -47,10 +27,14 @@ const requests = {
 			<h1 id="dialog-h1"></h1>
 			<h3><span id="dialog-span-votes"></span><span id="dialog-span-release"></span></h3>
 			<p id="dialog-p"></p>
-			<div><button id="dialog-button-play"><img src="./play_icon.png" alt="play_icon" />Play</button><button id="dialog-button-add"><img src="./add_icon.png" alt="add_icon" /> My List</button></div>
+			<div class="dialog_buttons">
+				<button id="dialog-button-play"><img src="./play_icon.png" alt="play_icon" />Play</button>
+				<button id="dialog-button-add"><img src="./add_icon.png" alt="add_icon" /> My List</button>
+			</div>
 		</div>
 	</div>
 	<div class="row-container"></div>
+		<div class="banner--fadeBottom" />
 		<Row title="Platform Originals" isLargeRow fetchUrl={requests.fetchNetflixOriginals} />
 		<Row title="Trending" fetchUrl={requests.fetchTrending} />
 		<Row title="Top Rated" fetchUrl={requests.fetchTopRated} />
@@ -88,7 +72,7 @@ const requests = {
   box-shadow: 0 1.5rem 4rem rgba(23, 24, 24, 0.15);
 }
 .dialog-container{
-	background: linear-gradient(90deg, #000 50%, transparent);
+	background: linear-gradient(90deg, #000 30%, transparent);
 	width: calc(80dvw - 40px);
 	aspect-ratio: 16/9;
 	padding: 10px 20px 0px 20px;
@@ -109,11 +93,15 @@ const requests = {
 .dialog #dialog-span-votes{
 	color: #2b961f
 }
+.dialog_buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
 .dialog button{
 	width: auto;
 	height: auto;
-	padding: 5px 20px 5px 40px;
-	margin-right: 10px;
+	padding: 0.5rem 2rem;
 	font-size: 1rem;
 	border: 0;
 	color: white;
@@ -121,14 +109,13 @@ const requests = {
 	transition: all 0.2s;
 	cursor: pointer;
 	position: relative;
+	display: flex;
+    align-items: center;
+    gap: 5px
 }
 .dialog button img{
-	width: 16px;
-	height: auto;
-	position: absolute;
-	top: 50%;
-	left: 15px;
-	transform: translateY(-50%);
+	height: 0.8rem;
+	width: auto;
 }
 .dialog button:hover{
 	transform: scale(1.1)
@@ -204,6 +191,14 @@ const requests = {
 		padding: 0;
 	}
 	.row-container{
-		margin-top: 500px
+		margin-top: 65dvh
 	}
+	.banner--fadeBottom {
+    position: absolute;
+	top: calc(65dvh - 7.4rem);
+    left: 0;
+    width: 100dvw;
+    height: 7.4rem;
+    background-image: linear-gradient(180deg, transparent, rgba(37, 37, 37, 0.61), #111);
+  }
 </style>

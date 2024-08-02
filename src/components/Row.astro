@@ -1,29 +1,27 @@
 ---
-import Dialog from "./Dialog.astro"
 const base_url = "https://image.tmdb.org/t/p/original"
 const { title, fetchUrl, isLargeRow } = Astro.props
-//console.log('https://api.themoviedb.org/3' + fetchUrl + '&sort_by=vote_count.desc')
 const response = await fetch('https://api.themoviedb.org/3' + fetchUrl + '&sort_by=vote_count.desc', 
     {
-        method: 'GET',
+    method: 'GET',
 		headers:  {
 		accept: 'application/json',
 	    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlOGZlNTAwYjBjNDdhNTg0ZGExZmNiMzA0ZDEyOTY0MiIsInN1YiI6IjY1ZDVmMmNhYjA0NjA1MDE3YjA5MGY4NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ._aOhARrES9hn7shpUyAXJDeqdw07zz-83liR3zfg3FQ'
 	}})
 const res = await response.json()
 const movies = res.results
+console.log('movies', movies)
 ---
-
 <div class="row">
   <h2>{title}</h2>
   <div class="row_posters">
       {movies && movies.map((movie, id) => {
-      return movie.backdrop_path && (<img
+      return movie.poster_path && (<img
           id={id}
           loading="lazy"
           onclick=`ShowModal(${JSON.stringify(movie)})`
           class={`row_poster ${isLargeRow && "row_posterLarge"}`}
-          src={`${base_url}${movie.backdrop_path}`}
+          src={`${base_url}${movie.poster_path}`}
           alt={movie.title ?? movie.name} />
       )
       })}
@@ -48,12 +46,12 @@ const movies = res.results
       document.getElementById('dialog-span-release').innerText = ` Released date: ${c['first_air_date'] ?? c['release_date']}`
       document.getElementById('dialog-p').innerText = c['overview']
       ///
+      document.getElementById('dialog').style.backgroundImage = `url(${"https://image.tmdb.org/t/p/original"+c['backdrop_path']})`
       document.getElementById('background-dialog').style.width = `${window.screen.availWidth}px`;
       document.getElementById('background-dialog').style.height = `${pageHeight}px`;
       document.getElementById('background-dialog').style.position = 'fixed';
       document.getElementById('dialog').classList.toggle('show')
       document.getElementById('dialog').style.visibility = "visible"
-      document.getElementById('dialog').style.backgroundImage = `url(${"https://image.tmdb.org/t/p/original"+c['backdrop_path']})`
     }
     function HideModal(d){
       document.getElementById('background-dialog').style.width = 0;
@@ -68,6 +66,7 @@ const movies = res.results
 .row {
   color: #fff;
   margin: 0 20px;
+  position: relative;
 }
 
 .row_posters {
@@ -82,8 +81,8 @@ const movies = res.results
 
 .row_poster {
   width: 200px;
-  aspect-ratio: 16/9;
   object-fit: contain;
+  max-height: 250px;
   margin-right: 20px;
   transition: transform 450ms;
   border-radius: 10px;
@@ -99,5 +98,8 @@ const movies = res.results
 
 .row_posterLarge:hover {
   transform: scale(1.11);
+} 
+h2{
+  margin: .75rem 0
 }
 </style>
