@@ -52,6 +52,8 @@ console.log('movies', movies)
       document.getElementById('background-dialog').style.position = 'fixed';
       document.getElementById('dialog').classList.toggle('show')
       document.getElementById('dialog').style.visibility = "visible"
+
+      document.getElementById('dialog-button-play-a-href').href = `/play_media?title=${c?.title || c?.name || c?.original_name}&isMovie=${(c?.release_date == undefined) ? 'false': 'true'}&release_date=${c?.release_date || c?.first_air_date}`
     }
     function HideModal(d){
       document.getElementById('background-dialog').style.width = 0;
