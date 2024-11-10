@@ -114,7 +114,6 @@ export default function Player ({url}){
         LookForMovie(movie_results)
       }
     }catch(err){
-      catch_error = err
       console.log('Error', err)
     }
   }
