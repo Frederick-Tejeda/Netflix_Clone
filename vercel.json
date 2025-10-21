@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "api/**": {
+      "runtime": "nodejs20.x"
+    },
+    "pages/**": {
+      "runtime": "nodejs20.x"
+    }
+  }
+}
