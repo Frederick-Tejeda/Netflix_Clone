@@ -66,9 +66,8 @@ export default function Player ({url}){
       const response = await fetch(url_to_fetch, options);
       console.log({response})
       const result = await response.json();
-      media_results = result.d
+      media_results = result?.d
       console.log({isMovie})
-      //console.log({result})
       console.log({media_results})
       if(!media_results || media_results.length < 1){
         MediaNoFound()
