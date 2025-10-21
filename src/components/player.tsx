@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react"
+const PUBLIC_RAPIDAPI_API_KEY: string = import.meta.env.PUBLIC_RAPIDAPI_API_KEY;
 
 export default function Player ({url}){
 
-    const [final_movie, setFinal_movie] = useState({})
+    const [final_movie, setFinal_movie] = useState({id: "", imdb_id: ""})
     const [new_url, setNew_url] = useState("")
     const [message, setMessage] = useState("Loading...")
 
@@ -15,9 +16,8 @@ export default function Player ({url}){
       dic_of_params[key] = value
     })
     let [title, release_year, isMovie] = [decodeURIComponent(dic_of_params['title']), dic_of_params['release_date'].split('-')[0], dic_of_params['isMovie'].split('-')[0]]
-    let url_to_fetch = new URL(`https://movies-tv-shows-database.p.rapidapi.com/?title=${title}`)
-
-    isMovie = (isMovie == 'true') ? true : false
+    let low_title = title.toLocaleLowerCase()
+    let url_to_fetch = new URL(`https://imdb-movies-web-series-etc-search.p.rapidapi.com/=${low_title.replaceAll(" ", "")}.json`)
 
     const MediaNoFound = () => {
       console.log('Media no Found')
@@ -28,13 +28,12 @@ export default function Player ({url}){
     console.log({title, release_year})
     movie_results = movie_results.filter((e) => e?.title == title && e?.year == release_year)
     console.log({movie_results})
-    const results = []
       movie_results.forEach(async element => {
         const url = `https://imdb188.p.rapidapi.com/api/v1/searchIMDB?query=${element.imdb_id}`;
         const options = {
           method: 'GET',
           headers: {
-            'x-rapidapi-key': 'f926bd8046msh8fc4f7d8a15079fp1abd39jsndcb95e31d843',
+            'x-rapidapi-key': PUBLIC_RAPIDAPI_API_KEY,
             'x-rapidapi-host': 'imdb188.p.rapidapi.com'
           }
         };
@@ -46,7 +45,6 @@ export default function Player ({url}){
             console.log('here')
             const data_result = await result.data.filter((e) => e?.year == release_year && e?.title == title)[0]
             setFinal_movie(data_result)
-            console.log({new_url})
           }
         } catch (error) {
           console.error(error);
@@ -55,63 +53,37 @@ export default function Player ({url}){
   }
 
   const GetMovieInfo = async () => {
-    let movie_results = []
+    let media_results = []
     try{
-      const options = isMovie ? {
+      const options = {
         method: 'GET',
         headers: {
-          'x-rapidapi-key': 'f926bd8046msh8fc4f7d8a15079fp1abd39jsndcb95e31d843',
-          'x-rapidapi-host': 'movies-tv-shows-database.p.rapidapi.com',
-          Type: 'get-movies-by-title'
+          'x-rapidapi-key': PUBLIC_RAPIDAPI_API_KEY,
+          'x-rapidapi-host': 'imdb-movies-web-series-etc-search.p.rapidapi.com',
         }
-      } : {
-        method: 'GET',
-        headers: {
-          'x-rapidapi-key': 'f926bd8046msh8fc4f7d8a15079fp1abd39jsndcb95e31d843',
-          'x-rapidapi-host': 'movies-tv-shows-database.p.rapidapi.com',
-          Type: 'get-shows-by-title'
-        }
-      }
+      };
+      console.log({options})
       const response = await fetch(url_to_fetch, options);
+      console.log({response})
       const result = await response.json();
-      if(isMovie == true){
-        console.log('movie')
-        movie_results = result.movie_results
-      }else{
-        console.log('show')
-        movie_results = result.tv_results
-      }
+      media_results = result.d
       console.log({isMovie})
-      console.log({result})
-      console.log({movie_results })
-      if(!movie_results){
+      //console.log({result})
+      console.log({media_results})
+      if(!media_results || media_results.length < 1){
         MediaNoFound()
         return
       }
-      
-      console.log({movie_results})
-      const low_title = title.toLocaleLowerCase()
+
       console.log({low_title})
-      await movie_results.forEach((a) => {
-        console.log({title: a['title'].toLocaleLowerCase() == low_title, year: a[(isMovie == true) ? 'year' : 'release_date'] == release_year});
-        
-        if(isMovie == true){
-          if(a['title'].toLocaleLowerCase() == low_title && a['year'] == release_year){
-            setFinal_movie(a)
-            console.log({new_url})
-          }
-        }else{
-          if(a['title'].toLocaleLowerCase() == low_title && a['release_date'].split('-')[0] == release_year){
-            setFinal_movie(a)
-            console.log({new_url})
-          }
+      await media_results.forEach((a) => {
+        if(a['l'].toLocaleLowerCase() == low_title && a['y'] == release_year){
+          setFinal_movie(a)
+          console.log({final_movie})
         }
       })
-       console.log({final_movie})
-      if(movie_results.length < 1){
-        catch_error = true
-      }else if(movie_results.length > 1){
-        LookForMovie(movie_results)
+      if(media_results.length > 1){
+        LookForMovie(media_results)
       }
     }catch(err){
       console.log('Error', err)
@@ -120,7 +92,9 @@ export default function Player ({url}){
 
   const Iframe = () => {
     return(
-        <iframe src={new_url} allowFullScreen autoPlay></iframe>
+      <div style={{width: "100%", height: "96dvh"}}>
+        <iframe style={{width: "100%", height: "100%"}} src={new_url} referrerPolicy="origin" allow="autoplay" allowFullScreen></iframe>
+      </div>
     )
   }
   
@@ -129,13 +103,13 @@ export default function Player ({url}){
   }, [])
   
   useEffect(() => {
-    if (final_movie != undefined) setNew_url((isMovie == true) ? `https://vidsrc.cc/v2/embed/movie/${final_movie?.imdb_id}?autoPlay=true`: `https://vidsrc.cc/v2/embed/tv/${final_movie?.imdb_id}/1/1`)
+    if (final_movie != undefined) setNew_url((isMovie == "true") ? `https://vidsrc-me.su/embed/movie?imdb=${final_movie?.id}` : `https://vidsrc-me.su/embed/tv?imdb=${final_movie?.id}&season=1&episode=1`)
     console.log({final_movie})
   }, [final_movie])
 
     return(
-      <div>
-          {(final_movie.id || final_movie.imdb_id) ? ( <Iframe /> ) : ( <h1>{message}</h1> )} 
+      <div className="player">
+          {(final_movie?.id || final_movie?.imdb_id) ? ( <Iframe /> ) : ( <h1>{message}</h1> )} 
       </div>
     )
 }

@@ -28,8 +28,9 @@ const requests = {
 			<h3><span id="dialog-span-votes"></span><span id="dialog-span-release"></span></h3>
 			<p id="dialog-p"></p>
 			<div class="dialog_buttons">
-				<button id="dialog-button-play"><img src="./play_icon.png" alt="play_icon" /><a id="dialog-button-play-a-href" href=""><span>Play</span></a></button>
-				<button id="dialog-button-add"><img src="./add_icon.png" alt="add_icon" /> My List</button>
+				<!-- <button id="dialog-button-play"><img src="./play_icon.png" alt="play_icon" /><a id="dialog-button-play-a-href" href=""><span>Play</span></a></button> -->
+				<a id="dialog-button-play-a-href" href=""><button id="dialog-button-play"><img src="./play_icon.png" alt="play_icon" /><span>Play</span></button></a>
+				<a id="dialog-button-add-list-a-href" href-"#" ><button id="dialog-button-add"><img src="./add_icon.png" alt="add_icon" /> My List</button></a>
 			</div>
 		</div>
 	</div>
@@ -101,7 +102,7 @@ const requests = {
 .dialog button{
 	width: auto;
 	height: auto;
-	padding: 0.5rem 2rem;
+	padding: 8px 25px;
 	font-size: 1rem;
 	border: 0;
 	color: white;
@@ -121,11 +122,18 @@ const requests = {
 	transform: scale(1.1)
 }
 .dialog #dialog-button-play{
-	background-color: red
+	background-color: red;
+}
+#dialog-button-play-a-href, #dialog-button-add-list-a-href{
+	text-decoration: none;
+  	color: white;
+	width: 100px;
+	max-width: 150px;
 }
 .dialog #dialog-button-add{
 	background-color: black;
 	border: 0.5px solid #7a7a7a;
+	width: 125px;
 }
 .show{
   top: 50%;
